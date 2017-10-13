@@ -51,9 +51,9 @@ public class QQModule extends ReactContextBaseJavaModule implements IUiListener,
     private static final String RCTQQShareWebpageUrl = "webpageUrl";
     private static final String RCTQQShareImageUrl = "imageUrl";
 
-    private static final int SHARE_RESULT_CODE_SUCCESSFUL = 0;
-    private static final int SHARE_RESULT_CODE_FAILED = 1;
-    private static final int SHARE_RESULT_CODE_CANCEL = 2;
+    private static final int RESULT_CODE_SUCCESSFUL = 0;
+    private static final int RESULT_CODE_FAILED = 1;
+    private static final int RESULT_CODE_CANCEL = 2;
 
     public QQModule(ReactApplicationContext context) {
         super(context);
@@ -89,6 +89,16 @@ public class QQModule extends ReactContextBaseJavaModule implements IUiListener,
 
         super.onCatalystInstanceDestroy();
     }
+
+    @Override
+    public Map<String, Object> getConstants() {
+      final Map<String, Object> constants = new HashMap<>();
+      constants.put("RESULT_CODE_SUCCESSFUL", RESULT_CODE_SUCCESSFUL);
+      constants.put("RESULT_CODE_CANCEL", RESULT_CODE_CANCEL);
+      constants.put("RESULT_CODE_FAILED", RESULT_CODE_FAILED);
+      return constants;
+    }
+
 
     @Override
     public String getName() {
@@ -222,7 +232,7 @@ public class QQModule extends ReactContextBaseJavaModule implements IUiListener,
             resultMap.putString("type", "QQAuthorizeResponse");
             try {
                 JSONObject obj = (JSONObject) (o);
-                resultMap.putInt("errCode", 0);
+                resultMap.putInt("errCode", RESULT_CODE_SUCCESSFUL);
                 resultMap.putString("openid", obj.getString(Constants.PARAM_OPEN_ID));
                 resultMap.putString("access_token", obj.getString(Constants.PARAM_ACCESS_TOKEN));
                 resultMap.putString("oauth_consumer_key", this.appId);
@@ -238,8 +248,8 @@ public class QQModule extends ReactContextBaseJavaModule implements IUiListener,
             }
         } else {
             resultMap.putString("type", "QQShareResponse");
-            resultMap.putInt("errCode", SHARE_RESULT_CODE_SUCCESSFUL);
-            resultMap.putString("message", "Share successfully.");
+            resultMap.putInt("errCode", RESULT_CODE_SUCCESSFUL);
+            resultMap.putString("message", this._getType()+" successfully.");
         }
 
         this.resolvePromise(resultMap);
@@ -248,18 +258,18 @@ public class QQModule extends ReactContextBaseJavaModule implements IUiListener,
     @Override
     public void onError(UiError uiError) {
         WritableMap resultMap = Arguments.createMap();
-        resultMap.putInt("errCode", SHARE_RESULT_CODE_FAILED);
-        resultMap.putString("message", "Share failed." + uiError.errorDetail);
-
+        resultMap.putInt("errCode", RESULT_CODE_FAILED);
+        resultMap.putString("message", this._getType()+" failed." + uiError.errorDetail);
+        resultMap.putString("type", this._getType());
         this.resolvePromise(resultMap);
     }
 
     @Override
     public void onCancel() {
         WritableMap resultMap = Arguments.createMap();
-        resultMap.putInt("errCode", SHARE_RESULT_CODE_CANCEL);
-        resultMap.putString("message", "Share canceled.");
-
+        resultMap.putInt("errCode", RESULT_CODE_CANCEL);
+        resultMap.putString("message", this._getType()+ " canceled.");
+        resultMap.putString("type", this._getType());
         this.resolvePromise(resultMap);
     }
 

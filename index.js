@@ -38,7 +38,7 @@ function waitForResponse(type) {
             }
             savedCallback = undefined;
             if (result.errCode !== 0) {
-                const err = new Error(result.errMsg);
+                const err = new Error(result.errMsg || result.message);
                 err.errCode = result.errCode;
                 reject(err);
             } else {
