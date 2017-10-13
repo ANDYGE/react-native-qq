@@ -91,16 +91,6 @@ public class QQModule extends ReactContextBaseJavaModule implements IUiListener,
     }
 
     @Override
-    public Map<String, Object> getConstants() {
-      final Map<String, Object> constants = new HashMap<>();
-      constants.put("RESULT_CODE_SUCCESSFUL", RESULT_CODE_SUCCESSFUL);
-      constants.put("RESULT_CODE_CANCEL", RESULT_CODE_CANCEL);
-      constants.put("RESULT_CODE_FAILED", RESULT_CODE_FAILED);
-      return constants;
-    }
-
-
-    @Override
     public String getName() {
         return "RCTQQAPI";
     }
